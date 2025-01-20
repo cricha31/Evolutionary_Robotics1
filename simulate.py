@@ -8,6 +8,9 @@ import time
 # Connect to the physics engine and open the GUI
 physicsClient = p.connect(p.GUI)
 
+# Attempt to clean up simulation
+p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+
 # Potential spot to add in things to the simulation later
 
 # Run the simulation for 1000 steps
