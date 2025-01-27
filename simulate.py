@@ -8,7 +8,8 @@ import time
 # Connect to the physics engine and open the GUI
 physicsClient = p.connect(p.GUI)
 
-# Potential spot to add in things to the simulation later
+# Simulating a box
+p.loadSDF("box.sdf")
 
 # Run the simulation for 1000 steps
 for i in range(1000):
