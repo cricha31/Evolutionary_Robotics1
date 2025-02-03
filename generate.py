@@ -1,44 +1,45 @@
 # Import pyrosim
 import pyrosim.pyrosim as pyrosim
 
-# Tell pyrosim the name of the file where the world will be stored
-# Now called 5x5_towers (was originially box, then boxes, then tower)
-pyrosim.Start_SDF("5x5_towers.sdf")
+def Create_World():
+    # Tell pyrosim the name of the file where the world will be stored
+    pyrosim.Start_SDF("world.sdf")
 
-# Create variables for box parameters
-length = 1
-width = 1
-height = 1
+    # Store box position and parameters
+    pyrosim.Send_Cube(name="Box", pos=[-10,0,0.5], size=[1,1,1])
 
-# Create variables for position(start first block with height 0.5)
-base_x = 0
-base_y = 0
-base_z = 0.5
+    # End the SDF generation
+    pyrosim.End()
 
-# Loop through the rows and columns to create the grid
-for row in range(5):  # 5 rows
-    for col in range(5):  # 5 columns
-        # Set the base position for each tower in the grid
-        x = base_x + col * (length * 1.1)  # Offset x position for each column
-        y = base_y + row * (width * 1.1)   # Offset y position for each row
-        z = base_z  # Reset z for each tower
+def Create_Robot():
+    # Start creating the robot description in URDF format
+    pyrosim.Start_URDF("body.urdf")
 
-        # Create the blocks in the current tower
-        for i in range(10):  # 10 blocks per tower
-            pyrosim.Send_Cube(name=f"Block_{row}_{col}_{i}", pos=[x, y, z], size=[length, width, height])
+    # Block dimensions
+    length = 1
+    width = 1
+    height = 1
 
-            # Move the next block upwards
-            z += height
+    # Create the root cube (Torso)
+    pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1.5], size=[length, width, height])
 
-            # Decrease the size for the next block (90% of previous size)
-            length *= 0.9
-            width *= 0.9
-            height *= 0.9
+    # Create Joint between Torso and BackLeg
+    pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[0, 0, 1])
 
-        # Reset the block size for the next tower
-        length = 1
-        width = 1
-        height = 1
+    # Create BackLeg
+    pyrosim.Send_Cube(name="BackLeg", pos=[1, 0, -0.5], size=[length, width, height])
 
-# End the SDF generation
-pyrosim.End()
+    # Create joint between Torso and FrontLeg
+    pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[1, 0, 1])
+
+    # Create FrontLeg
+    pyrosim.Send_Cube(name="FrontLeg", pos=[-2, 0, -0.5], size=[length, width, height])
+
+
+
+
+    # End the URDF generation
+    pyrosim.End()
+
+Create_World()
+Create_Robot()
