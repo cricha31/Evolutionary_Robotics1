@@ -10,12 +10,12 @@ import constants as c  # Import constants
 from sensor import SENSOR
 from motor import MOTOR
 
+from pyrosim.neuralNetwork import NEURAL_NETWORK
+from generate import Generate_Body as GB
 class ROBOT:
 
     def __init__(self):
-        #self.sensor = SENSOR()
-        #self.motor = MOTOR()
-
+        GB()
         # Loads the robot body and prepares it for simulation.
         self.robotId = p.loadURDF("body.urdf")  # Load robot URDF
 
@@ -28,6 +28,7 @@ class ROBOT:
         # Prepare motors
         self.Prepare_To_Act()
 
+        self.nn = NEURAL_NETWORK("brain.nndf")
     def Prepare_To_Sense(self):
         """Initialize the dictionary for sensors."""
         self.sensors = {}
@@ -42,10 +43,22 @@ class ROBOT:
     def Prepare_To_Act(self):
         '''Initialize the dictionary for motors'''
         self.motors = {}
+
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)  # Create MOTOR instance
 
+
     def Act(self, t):
-        # iterate over all motors and set their values at time t
-        for motor in self.motors.values():   # iterate of all MOTOR instances
-            motor.Set_Value(t, self)    # call Set_Value() on each motor
+        for neuronName in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(neuronName):
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName).encode("utf-8")
+                # Extract the value (desired angle) for this motor neuron
+                desiredAngle = self.nn.Get_Value_Of(neuronName)
+
+                self.motors[jointName].Set_Value(self, desiredAngle)
+                jointName= jointName.decode("utf-8")
+
+    def Think(self):
+        self.nn.Update()
+        self.nn.Print()
+

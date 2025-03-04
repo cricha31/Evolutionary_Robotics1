@@ -32,12 +32,14 @@ class SIMULATION:
 
     def Run(self):
         """Run the simulation loop."""
-        for i in range(c.TIMESTEPS):
+        for t in range(c.TIMESTEPS):
 
             p.stepSimulation()  # Step physics simulation
-            self.robot.Sense(i)   # Read sensor values
+            self.robot.Sense(t)   # Read sensor values
+            self.robot.Think()
+            self.robot.Act(t)
             time.sleep(c.FRAME_RATE)  # Slow down for real-time visualization
-            self.robot.Act(i)
+
 
 
     def __del__(self):

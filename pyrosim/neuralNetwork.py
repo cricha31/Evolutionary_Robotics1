@@ -28,7 +28,26 @@ class NEURAL_NETWORK:
 
         print("")
 
-# ---------------- Private methods --------------------------------------
+    def Update(self):
+        for neuronName in self.neurons:
+            if self.neurons[neuronName].Is_Sensor_Neuron():
+                self.neurons[neuronName].Update_Sensor_Neuron()
+            else:
+                self.neurons[neuronName].Update_Hidden_Or_Motor_Neuron()
+
+    def Get_Neuron_Names(self):
+        return self.neurons.keys()   #returns a list of all neuron names
+
+    def Is_Motor_Neuron(self, neuronName):
+        return self.neurons[neuronName].Is_Motor_Neuron()  # Call to NEURON's Is_Motor_Neuron method
+
+    def Get_Motor_Neurons_Joint(self, neuronName):
+        return self.neurons[neuronName].Get_Joint_Name()  # Get joint name from the NEURON class
+
+    def Get_Value_Of(self, neuronName):
+        return self.neurons[neuronName].Get_Value()  # Get the value of the neuron, which is the desired angle
+
+    # ---------------- Private methods --------------------------------------
 
     def Add_Neuron_According_To(self,line):
 
