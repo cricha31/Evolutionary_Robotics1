@@ -14,9 +14,10 @@ from robot import ROBOT
 class SIMULATION:
 
     def __init__(self, directOrGUI):
+        self.directOrGUI = directOrGUI
 
         # Initialize the simulation based on the mode
-        if directOrGUI == "GUI":
+        if self.directOrGUI == "GUI":
             self.physicsClient = p.connect(p.GUI)  # Heads-up mode
         else:
             self.physicsClient = p.connect(p.DIRECT)  # Blind mode
@@ -42,7 +43,9 @@ class SIMULATION:
             self.robot.Sense(t)   # Read sensor values
             self.robot.Think()
             self.robot.Act(t)
-            time.sleep(c.FRAME_RATE)  # Slow down for real-time visualization
+            # Add time.sleep only if in GUI mode (for visualization purposes)
+            if self.directOrGUI == "GUI":
+                time.sleep(c.FRAME_RATE)  # Slow down for real-time visualization
 
 
 

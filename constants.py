@@ -22,7 +22,7 @@ PHASE_OFFSET_FRONT_LEG = numpy.pi  # Phase shifted by pi
 GRAVITY = -9.8
 TIMESTEPS = 500
 MAX_FORCE = 50
-FRAME_RATE = 1 / 250  # 60 FPS
+FRAME_RATE = 1 / 100  # 60 FPS
 
 # Parameter for spawn generations
 numberOfGenerations = 10
