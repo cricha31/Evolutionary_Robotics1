@@ -13,22 +13,26 @@ from robot import ROBOT
 
 class SIMULATION:
 
-    def __init__(self):
-        # Connect to physics engine
-        self.physicsClient = p.connect(p.GUI)
+    def __init__(self, directOrGUI):
+
+        # Initialize the simulation based on the mode
+        if directOrGUI == "GUI":
+            self.physicsClient = p.connect(p.GUI)  # Heads-up mode
+        else:
+            self.physicsClient = p.connect(p.DIRECT)  # Blind mode
 
         # Set the search path for assets
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
         # Add gravity
-        p.setGravity(0, 0, c.GRAVITY, self.physicsClient)
+        p.setGravity(0, 0, c.GRAVITY)
 
         # Create world and robot instances
         self.world = WORLD()
         self.robot = ROBOT()
 
-        # Prepare robot for simulation
-        pyrosim.Prepare_To_Simulate(self.robot.robotId)
+        ''''# Prepare robot for simulation
+        pyrosim.Prepare_To_Simulate(self.robot.robotId)'''
 
     def Run(self):
         """Run the simulation loop."""
@@ -42,6 +46,9 @@ class SIMULATION:
 
 
 
-    def __del__(self):
+    '''def __del__(self):
 
-        p.disconnect()
+        p.disconnect()'''
+
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()

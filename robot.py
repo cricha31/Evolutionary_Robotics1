@@ -60,5 +60,20 @@ class ROBOT:
 
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
+        #self.nn.Print()
+
+    def Get_Fitness(self):
+        # Get the state of the first link (link zero)
+        stateOfLinkZero = p.getLinkState(self.robotId, 0)
+
+        # Get the state of the first link (link zero)
+        positionOfLinkZero = stateOfLinkZero[0]
+
+        # Extract the x coordinate (first element) from positionOfLinkZero
+        xCoordinateOfLinkZero = positionOfLinkZero[0]
+
+        # Write the x coordinate to a file (fitness.txt)
+        with open("fitness.txt", "w") as file:
+            file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
+
 

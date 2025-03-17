@@ -13,6 +13,14 @@ import os
 # Import constants and simulation file
 import constants as c
 from simulation import SIMULATION
+import sys
 
-simulation = SIMULATION()  # Create an instance of the SIMULATION class
+# Extract the argument
+directOrGUI = sys.argv[1]
+
+simulation = SIMULATION(directOrGUI)  # Create an instance of the SIMULATION class
 simulation.Run()  # Call the Run method to start the simulation
+
+# Import from simulation
+simulation.Get_Fitness()  # This will call the Get_Fitness() method
+

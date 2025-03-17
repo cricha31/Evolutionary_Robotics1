@@ -50,7 +50,7 @@ class NEURON:
 
     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
         self.Set_Value(0.0)  # changing this
-        print(f"Before update, Neuron {self.Get_Name()} Value: {self.Get_Value()}")  # Print initial value
+        #print(f"Before update, Neuron {self.Get_Name()} Value: {self.Get_Value()}")  # Print initial value
 
         for key in synapses:  # Iterate through all synapses
             if key[1] == self.Get_Name():  # If synapse connects to this neuron
