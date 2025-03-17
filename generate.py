@@ -1,5 +1,6 @@
 # Import pyrosim
 import pyrosim.pyrosim as pyrosim
+import random
 
 def Create_World():
     # Tell pyrosim the name of the file where the world will be stored
@@ -54,13 +55,19 @@ def Generate_Brain():
     pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
     pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
 
-    # Generate a synapse
+    """""# Generate a synapse
     pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3, weight=1)
     # Generate second synapse
     pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3, weight=1)
 
-    #pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=0.5)
-    #pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=-1)
+    pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=0.5)
+    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=-1)"""
+
+    # Generate synapses using nested loops
+    for i in range(3):  # Sensor neurons (0, 1, 2)
+        for j in range(3, 5):  # Motor neurons (3, 4)
+            weight = random.uniform(-1, 1)  # Generate a random weight in [-1,1]
+            pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=weight)
 
     # End the URDF generation
     pyrosim.End()
