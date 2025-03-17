@@ -20,6 +20,6 @@ PHASE_OFFSET_FRONT_LEG = numpy.pi  # Phase shifted by pi
 
 # Simulation parameters
 GRAVITY = -9.8
-TIMESTEPS = 1000
+TIMESTEPS = 100
 MAX_FORCE = 50
 FRAME_RATE = 1 / 30  # 60 FPS
