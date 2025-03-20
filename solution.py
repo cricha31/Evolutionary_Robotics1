@@ -2,6 +2,7 @@ import numpy as np
 import pyrosim.pyrosim as pyrosim
 import random
 import os
+import time
 
 class SOLUTION:
     def __init__(self, myID):
@@ -83,11 +84,20 @@ class SOLUTION:
         self.Generate_Brain()
         os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))
 
+        # Now, read the fitness from the fitness file specific to the solution ID
+        fitnessFileName = f"tmp{self.myID}.txt"  # dynamically create the file name based on the solution ID
+
+        # Wait for the fitness file to exist
+        while not os.path.exists(fitnessFileName):
+            time.sleep(0.01)  # Sleep for 0.01 seconds before checking again
+
         # Now, read the fitness from the fitness.txt file
-        with open("fitness.txt", "r") as fitnessFile:  #open file
+        with open(fitnessFileName, "r") as fitnessFile:  #open file
             fitnessValue = fitnessFile.read()  #read the fitness value as a string
 
-        self.fitness = float(fitnessValue)  #convert to float
+        self.fitness = float(fitnessValue) #convert to float
+
+        print(self.fitness)
 
     def Mutate(self):
         # Randomly choose a row (0, 1, or 2) to select a sensor neuron

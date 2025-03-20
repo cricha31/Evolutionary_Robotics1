@@ -82,7 +82,8 @@ class ROBOT:
         xCoordinateOfLinkZero = positionOfLinkZero[0]
 
         # Write the x coordinate to a file (fitness.txt)
-        with open("fitness.txt", "w") as file:
+        tmp_fitness_file = f"tmp{self.solutionID}.txt"
+        with open(tmp_fitness_file, "w") as file:
             file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
 
 
