@@ -85,7 +85,7 @@ class SOLUTION:
         os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))
 
         # Now, read the fitness from the fitness file specific to the solution ID
-        fitnessFileName = f"tmp{self.myID}.txt"  # dynamically create the file name based on the solution ID
+        fitnessFileName = f"fitness{self.myID}.txt"  # dynamically create the file name based on the solution ID
 
         # Wait for the fitness file to exist
         while not os.path.exists(fitnessFileName):

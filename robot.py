@@ -9,7 +9,7 @@ import os
 # Importing other files
 from sensor import SENSOR
 from motor import MOTOR
-
+import time
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 from generate import Generate_Body as GB
 class ROBOT:
@@ -85,5 +85,9 @@ class ROBOT:
         tmp_fitness_file = f"tmp{self.solutionID}.txt"
         with open(tmp_fitness_file, "w") as file:
             file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
+        time.sleep(0.01)
+
+        os.rename("tmp" + str(self.solutionID) + ".txt", "fitness" + str(self.solutionID) + ".txt")
+
 
 
