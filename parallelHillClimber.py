@@ -6,9 +6,11 @@ class PARALLEL_HILL_CLIMBER:
     def __init__(self):
         #self.parent = SOLUTION() # Create instance of SOLUTION
         self.parents = {}
+        self.nextAvailableID = 0
 
         for i in range(c.populationSize):  # Iterate from 0 to populationSize - 1
-            self.parents[i] = SOLUTION()  # Use loop variable as key, store new SOLUTION() as value
+            self.parents[i] = SOLUTION(self.nextAvailableID) # Use loop variable as key, store new SOLUTION() as value
+            self.nextAvailableID += 1
 
     def Evolve(self):
         ''''# Call the evaluate method from the parent solution
@@ -22,6 +24,9 @@ class PARALLEL_HILL_CLIMBER:
             self.parent = copy.deepcopy(self.next_parent)  # Ensure the parent updates for the next generation
 
         self.parent.Evaluate("GUI")'''
+        # Evaluate each parent one after the other in GUI mode
+        for key in self.parents:
+            self.parents[key].Evaluate("GUI")
         pass
 
     def Evolve_For_One_Generation(self):
@@ -36,9 +41,15 @@ class PARALLEL_HILL_CLIMBER:
         else:
             self.next_parent = self.parent  # Keep the same parent if the child isn't better"""
 
-
     def Spawn(self):
-        self.child = copy.deepcopy(self.parent)  # Create a deep copy of self.parent and assign it to self.child
+        self.children = []  # Create an empty list for children
+
+        # Iterate over all parents and spawn children from them
+        for i in self.parents:
+            child = copy.deepcopy(self.parents[i])  # Clone parent into child
+            child.Set_ID(self.nextAvailableID)  # Assign new ID to child
+            self.nextAvailableID += 1  # Increment the ID for the next child
+            self.children.append(child)  # Add the child to the children list  # Create a deep copy of self.parent and assign it to self.child
 
     def Mutate(self):
 

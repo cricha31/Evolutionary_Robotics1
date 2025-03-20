@@ -4,11 +4,13 @@ import random
 import os
 
 class SOLUTION:
-    def __init__(self):
+    def __init__(self, myID):
         self.weights = 2 * np.random.rand(3, 2) - 1  # this generates 3x2 matrix with random values between -1 and 1
 
         # Initialize the fitness attribute
         self.fitness = None
+
+        self.myID = myID
 
     def Create_World(self):
         # Tell pyrosim the name of the file where the world will be stored
@@ -79,7 +81,7 @@ class SOLUTION:
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
-        os.system(f"python simulate.py {directOrGui}")
+        os.system("start /B python simulate.py " + directOrGui)
 
         # Now, read the fitness from the fitness.txt file
         with open("fitness.txt", "r") as fitnessFile:  #open file
@@ -95,3 +97,6 @@ class SOLUTION:
 
         old_value = self.weights[randomRow, randomColumn]  # store the old weight
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
+
+    def Set_ID(self, newID):
+        self.myID = newID
