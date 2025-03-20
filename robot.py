@@ -14,8 +14,10 @@ from pyrosim.neuralNetwork import NEURAL_NETWORK
 from generate import Generate_Body as GB
 class ROBOT:
 
-    def __init__(self):
+    def __init__(self, solutionID):
+        self.solutionID = solutionID
         GB()
+
         # Loads the robot body and prepares it for simulation.
         self.robotId = p.loadURDF("body.urdf")  # Load robot URDF
 
@@ -28,7 +30,8 @@ class ROBOT:
         # Prepare motors
         self.Prepare_To_Act()
 
-        self.nn = NEURAL_NETWORK("brain.nndf")
+        brain_filename = f"brain{solutionID}.nndf"
+        self.nn = NEURAL_NETWORK(brain_filename)
     def Prepare_To_Sense(self):
         """Initialize the dictionary for sensors."""
         self.sensors = {}

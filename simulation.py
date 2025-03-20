@@ -13,8 +13,10 @@ from robot import ROBOT
 
 class SIMULATION:
 
-    def __init__(self, directOrGUI):
+    def __init__(self, directOrGUI, solutionID):
         self.directOrGUI = directOrGUI
+        self.solutionID = solutionID
+        #self.robot = ROBOT(self.solutionID)
 
         # Initialize the simulation based on the mode
         if self.directOrGUI == "GUI":
@@ -30,7 +32,7 @@ class SIMULATION:
 
         # Create world and robot instances
         self.world = WORLD()
-        self.robot = ROBOT()
+        self.robot = ROBOT(self.solutionID)
 
         ''''# Prepare robot for simulation
         pyrosim.Prepare_To_Simulate(self.robot.robotId)'''
