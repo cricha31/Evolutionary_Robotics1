@@ -81,7 +81,7 @@ class SOLUTION:
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
-        os.system("start /B python simulate.py " + directOrGui)
+        os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))
 
         # Now, read the fitness from the fitness.txt file
         with open("fitness.txt", "r") as fitnessFile:  #open file

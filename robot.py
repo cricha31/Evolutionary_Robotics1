@@ -5,7 +5,7 @@ import pybullet as p
 import pybullet_data
 import pyrosim.pyrosim as pyrosim
 import constants as c  # Import constants
-
+import os
 # Importing other files
 from sensor import SENSOR
 from motor import MOTOR
@@ -32,6 +32,12 @@ class ROBOT:
 
         brain_filename = f"brain{solutionID}.nndf"
         self.nn = NEURAL_NETWORK(brain_filename)
+
+        # Delete the brain file after it has been read
+        if os.name == "nt":  # Windows
+            os.system(f"del {brain_filename}")
+        else:  # Mac/Linux
+            os.system(f"rm {brain_filename}")
     def Prepare_To_Sense(self):
         """Initialize the dictionary for sensors."""
         self.sensors = {}
