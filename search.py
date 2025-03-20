@@ -1,5 +1,5 @@
 import os
-from hillclimber import HILL_CLIMBER
+from parallelHillClimber import PARALLEL_HILL_CLIMBER
 
 # Generate a loop that runs twice
 '''for _ in range(5):
@@ -10,8 +10,8 @@ from hillclimber import HILL_CLIMBER
     os.system("python simulate.py")'''
 
 # Create an instance of HILL_CLIMBER
-hc = HILL_CLIMBER()
+phc = PARALLEL_HILL_CLIMBER()
 
 # Call the Evolve() method
-hc.Evolve()
-hc.Show_Best()
+phc.Evolve()
+phc.Show_Best()
