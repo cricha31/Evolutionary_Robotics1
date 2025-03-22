@@ -92,12 +92,23 @@ class SOLUTION:
         while not os.path.exists(fitnessFileName):
             time.sleep(0.01)  # Sleep for 0.01 seconds before checking again
 
-        # Now, read the fitness from the fitness.txt file
+        '''# Now, read the fitness from the fitness.txt file
         with open(fitnessFileName, "r") as fitnessFile:  # open file
-            fitnessValue = fitnessFile.read()  # read the fitness value as a string
+            fitnessValue = fitnessFile.read()  # read the fitness value as a string'''
+        # Ensure the file is fully written before reading
+        while True:
+            try:
+                with open(fitnessFileName, "r") as fitnessFile:
+                    fitnessValue = fitnessFile.read().strip()  # Strip any extra spaces
+                    if fitnessValue:  # Ensure it's not empty
+                        break
+            except IOError:
+                time.sleep(0.01)  # Keep waiting if the file is locked
 
         self.fitness = float(fitnessValue)
-        print(self.fitness)
+        # Print in a structured way
+        print(f"Solution {self.myID} Fitness: {self.fitness}")
+        #print(self.fitness)
 
         # Delete the fitness file after reading
         if os.name == "nt":  # Windows

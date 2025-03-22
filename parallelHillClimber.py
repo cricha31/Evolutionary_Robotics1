@@ -24,11 +24,22 @@ class PARALLEL_HILL_CLIMBER:
             self.parent = copy.deepcopy(self.next_parent)  # Ensure the parent updates for the next generation
 
         self.parent.Evaluate("GUI")'''
-        # Evaluate each parent one after the other in GUI mode
-        for key in self.parents:
-            self.parents[key].Start_Simulation("GUI")
-        for key in self.parents:
-            self.parents[key].Wait_For_Simulation_To_End("GUI")
+        batch_size = min(3, c.populationSize)  # Set batch size (adjust as needed)
+
+
+        # Run all parents in batches
+        for i in range(0, c.populationSize, batch_size):
+            batch = list(self.parents.keys())[i:i + batch_size]
+            # Evaluate each parent one after the other in GUI mode
+            for key in batch:
+                 self.parents[key].Start_Simulation("DIRECT")
+
+            for key in batch:
+                 self.parents[key].Wait_For_Simulation_To_End("DIRECT")
+
+            # Loop through generations TEST
+        #for currentGeneration in range(c.numberOfGenerations):
+            #elf.Evolve_For_One_Generation()
         #pass
 
     def Evolve_For_One_Generation(self):
