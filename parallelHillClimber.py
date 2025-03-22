@@ -52,11 +52,11 @@ class PARALLEL_HILL_CLIMBER:
             # Loop through generations TEST
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation()
-            pass
+            #pass
 
     def Evolve_For_One_Generation(self):
-        '''self.Spawn()  # Generate a new solution (child)
-        self.Mutate()  # Apply mutation to the child
+        self.Spawn()  # Generate a new solution (child)
+        '''self.Mutate()  # Apply mutation to the child
         self.child.Evaluate("DIRECT")  # Evaluate the child
         self.Select()  # Select the best solution (parent or child)
         self.Print()'''
@@ -66,17 +66,21 @@ class PARALLEL_HILL_CLIMBER:
             self.next_parent = self.child  # Store as the next parent, but don't replace yet
         else:
             self.next_parent = self.parent  # Keep the same parent if the child isn't better"""
-        pass
+
     def Spawn(self):
-        self.children = []  # Create an empty list for children
+        self.children = {}  # Create an empty list for children
 
         # Iterate over all parents and spawn children from them
         for i in self.parents:
             child = copy.deepcopy(self.parents[i])  # Clone parent into child
             child.Set_ID(self.nextAvailableID)  # Assign new ID to child
             self.nextAvailableID += 1  # Increment the ID for the next child
-            self.children.append(child)  # Add the child to the children list  # Create a deep copy of self.parent and assign it to self.child
+            #self.children.append(child)  # Add the child to the children list  # Create a deep copy of self.parent and assign it to self.child
+            self.children[i] = child # add child to dictionary with parent key
 
+        for key, child in self.children.items():
+            print(f"Child {key}: {child.fitness}")
+        exit()
     def Mutate(self):
 
         self.child.Mutate()  # Call the mutate method of the child
