@@ -77,14 +77,43 @@ class SOLUTION:
         # End the URDF generation
         pyrosim.End()
 
-    def Evaluate(self, directOrGui):
+    def Start_Simulation(self, directOrGui):
         # Generate the world, body, and brain, and send synaptic weights
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
         os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))
 
+    def Wait_For_Simulation_To_End(self, directOrGui):
         # Now, read the fitness from the fitness file specific to the solution ID
+        fitnessFileName = f"fitness{self.myID}.txt"  # dynamically create the file name based on the solution ID
+
+        # Wait for the fitness file to exist
+        while not os.path.exists(fitnessFileName):
+            time.sleep(0.01)  # Sleep for 0.01 seconds before checking again
+
+        # Now, read the fitness from the fitness.txt file
+        with open(fitnessFileName, "r") as fitnessFile:  # open file
+            fitnessValue = fitnessFile.read()  # read the fitness value as a string
+
+        self.fitness = float(fitnessValue)
+        print(self.fitness)
+
+        # Delete the fitness file after reading
+        if os.name == "nt":  # Windows
+            os.system(f"del {fitnessFileName}")
+        else:  # Mac/Linux
+            os.system(f"rm {fitnessFileName}")
+
+
+    def Evaluate(self, directOrGui):
+        # Generate the world, body, and brain, and send synaptic weights
+        '''self.Create_World()
+        self.Generate_Body()
+        self.Generate_Brain()
+        os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))'''
+
+        ''''# Now, read the fitness from the fitness file specific to the solution ID
         fitnessFileName = f"fitness{self.myID}.txt"  # dynamically create the file name based on the solution ID
 
         # Wait for the fitness file to exist
@@ -95,9 +124,9 @@ class SOLUTION:
         with open(fitnessFileName, "r") as fitnessFile:  #open file
             fitnessValue = fitnessFile.read()  #read the fitness value as a string
 
-        self.fitness = float(fitnessValue) #convert to float
+        self.fitness = float(fitnessValue) #convert to float'''
 
-        print(self.fitness)
+        #print(self.fitness)
 
     def Mutate(self):
         # Randomly choose a row (0, 1, or 2) to select a sensor neuron

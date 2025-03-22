@@ -26,8 +26,10 @@ class PARALLEL_HILL_CLIMBER:
         self.parent.Evaluate("GUI")'''
         # Evaluate each parent one after the other in GUI mode
         for key in self.parents:
-            self.parents[key].Evaluate("GUI")
-        pass
+            self.parents[key].Start_Simulation("GUI")
+        for key in self.parents:
+            self.parents[key].Wait_For_Simulation_To_End("GUI")
+        #pass
 
     def Evolve_For_One_Generation(self):
         self.Spawn()  # Generate a new solution (child)
