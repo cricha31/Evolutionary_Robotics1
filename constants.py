@@ -26,4 +26,4 @@ FRAME_RATE = 1 / 100  # 60 FPS
 
 # Parameter for spawn generations
 numberOfGenerations = 10
-populationSize = 6
+populationSize = 2

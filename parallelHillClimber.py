@@ -38,22 +38,23 @@ class PARALLEL_HILL_CLIMBER:
                  self.parents[key].Wait_For_Simulation_To_End("DIRECT")
 
             # Loop through generations TEST
-        #for currentGeneration in range(c.numberOfGenerations):
-            #elf.Evolve_For_One_Generation()
-        #pass
+        for currentGeneration in range(c.numberOfGenerations):
+            self.Evolve_For_One_Generation()
+            pass
 
     def Evolve_For_One_Generation(self):
-        self.Spawn()  # Generate a new solution (child)
+        '''self.Spawn()  # Generate a new solution (child)
         self.Mutate()  # Apply mutation to the child
         self.child.Evaluate("DIRECT")  # Evaluate the child
         self.Select()  # Select the best solution (parent or child)
-        self.Print()
+        self.Print()'''
+
         """# Store the child if it's better but do NOT replace parent immediately
         if self.child.fitness < self.parent.fitness:
             self.next_parent = self.child  # Store as the next parent, but don't replace yet
         else:
             self.next_parent = self.parent  # Keep the same parent if the child isn't better"""
-
+        pass
     def Spawn(self):
         self.children = []  # Create an empty list for children
 

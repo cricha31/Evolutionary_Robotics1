@@ -106,9 +106,8 @@ class SOLUTION:
                 time.sleep(0.01)  # Keep waiting if the file is locked
 
         self.fitness = float(fitnessValue)
-        # Print in a structured way
-        print(f"Solution {self.myID} Fitness: {self.fitness}")
-        #print(self.fitness)
+        # Print in a structured way -REMOVE STEP 74
+        # print(f"Solution {self.myID} Fitness: {self.fitness}")
 
         # Delete the fitness file after reading
         if os.name == "nt":  # Windows
