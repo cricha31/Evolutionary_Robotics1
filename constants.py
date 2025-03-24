@@ -25,5 +25,5 @@ MAX_FORCE = 50
 FRAME_RATE = 1 / 500  # 60 FPS (looking at increase this to see if it takes less time with same results)
 
 # Parameter for spawn generations
-numberOfGenerations = 10
-populationSize = 10
+numberOfGenerations = 2
+populationSize = 2

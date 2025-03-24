@@ -5,6 +5,7 @@ import pybullet as p
 import pybullet_data
 import constants as c
 import time
+# Import pyrosim
 # Importing other class files
 from world import WORLD
 from robot import ROBOT
