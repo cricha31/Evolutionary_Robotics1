@@ -1,151 +1,142 @@
-import numpy as np
+import numpy
 import pyrosim.pyrosim as pyrosim
 import random
 import os
 import time
 
 class SOLUTION:
-    def __init__(self, myID):
-        self.weights = 2 * np.random.rand(3, 2) - 1  # this generates 3x2 matrix with random values between -1 and 1
+    def __init__(self, nextAvailableID):
+        self.myID = nextAvailableID
 
-        # Initialize the fitness attribute
-        self.fitness = None
+        # Generate a 3-row x 2-column matrix with random values in [0,1]
+        self.weights = numpy.random.rand(3, 2)
+        # Scale to [-1, 1]
+        self.weights = self.weights * 2 - 1
 
-        self.myID = myID
-
-    def Create_World(self):
-        # Tell pyrosim the name of the file where the world will be stored
-        pyrosim.Start_SDF("world.sdf")
-
-        # Store box position and parameters
-        pyrosim.Send_Cube(name="Box", pos=[-10, 0, 0.5], size=[1, 1, 1])
-
-        # End the SDF generation
-        pyrosim.End()
-
-    def Generate_Body(self):
-        # Start creating the robot description in URDF format
-        pyrosim.Start_URDF("body.urdf")
-
-        # Block dimensions
-        length = 1
-        width = 1
-        height = 1
-
-        # Create the root cube (Torso)
-        pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1.5], size=[length, width, height])
-
-        # Create Joint between Torso and BackLeg
-        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[0.5, 0, 1])
-
-        # Create BackLeg
-        pyrosim.Send_Cube(name="BackLeg", pos=[0.5, 0, -0.5], size=[length, width, height])
-
-        # Create joint between Torso and FrontLeg
-        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute",
-                           position=[-0.5, 0, 1])
-
-        # Create FrontLeg
-        pyrosim.Send_Cube(name="FrontLeg", pos=[-0.5, 0, -0.5], size=[length, width, height])
-
-        # End the URDF generation
-        pyrosim.End()
-
-        # CAN ADD IN WORLD.SDF IF NEED TO ADD THE EXTRA BOX BUT IT IS BUILT INTO WORLD FILE ALREADY
-
-    def Generate_Brain(self):
-        # Start creating the brain neural network
-        pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
-
-        pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
-        pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
-        pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
-
-        pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
-
-        # assign variables
-        sensor_neurons = [0, 1, 2]  # IDs of sensor neurons
-        motor_neurons = [0, 1]  # IDs of motor neurons
-
-        # Generate synapses using nested loops
-        for currentRow in sensor_neurons:  # Sensor neurons (0, 1, 2)
-            for currentColumn in motor_neurons:  # Motor neurons (3, 4)
-                weight = self.weights[currentRow][currentColumn]  # Generate a random weight in [-1,1]
-                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + 3, weight=weight)
-
-        # End the URDF generation
-        pyrosim.End()
-
-    def Start_Simulation(self, directOrGui):
-        # Generate the world, body, and brain, and send synaptic weights
+    def Evaluate(self, directOrGUI):
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
-        os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))
 
-    def Wait_For_Simulation_To_End(self, directOrGui):
-        # Now, read the fitness from the fitness file specific to the solution ID
-        fitnessFileName = f"fitness{self.myID}.txt"  # dynamically create the file name based on the solution ID
+        command = f"python simulate.py {directOrGUI} {self.myID} 2>&1 &"
+        os.system(command)
 
-        # Wait for the fitness file to exist
+        # fitnessFile = open("fitness.txt", "r")
+        # self.fitness = float(fitnessFile.read())
+        # fitnessFile.close()
+
+        fitnessFileName = f"fitness{str(self.myID)}.txt"
+
+        # Wait for the simulation to finish and the file to be created
         while not os.path.exists(fitnessFileName):
-            time.sleep(0.01)  # Sleep for 0.01 seconds before checking again
+            time.sleep(0.01)  # Wait 10ms before checking again
 
-        '''# Now, read the fitness from the fitness.txt file
-        with open(fitnessFileName, "r") as fitnessFile:  # open file
-            fitnessValue = fitnessFile.read()  # read the fitness value as a string'''
-        # Ensure the file is fully written before reading
-        while True:
-            try:
-                with open(fitnessFileName, "r") as fitnessFile:
-                    fitnessValue = fitnessFile.read().strip()  # Strip any extra spaces
-                    if fitnessValue:  # Ensure it's not empty
-                        break
-            except IOError:
-                time.sleep(0.01)  # Keep waiting if the file is locked
+        # Read fitness once file is available
+        with open(fitnessFileName, "r") as fitnessFile:
+            self.fitness = float(fitnessFile.read())
 
-        self.fitness = float(fitnessValue)
-        # Print in a structured way -REMOVE STEP 74
-        # print(f"Solution {self.myID} Fitness: {self.fitness}")
+        print(f"Solution {self.myID} fitness: {self.fitness}")
 
-        # Delete the fitness file after reading
-        if os.name == "nt":  # Windows
-            os.system(f"del {fitnessFileName}")
-        else:  # Mac/Linux
-            os.system(f"rm {fitnessFileName}")
-
-
-    def Evaluate(self, directOrGui):
-        # Generate the world, body, and brain, and send synaptic weights
-        '''self.Create_World()
+    def Start_Simulation(self, directOrGUI):
+        self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
-        os.system("start /B python simulate.py " + directOrGui + " " + str(self.myID))'''
 
-        ''''# Now, read the fitness from the fitness file specific to the solution ID
-        fitnessFileName = f"fitness{self.myID}.txt"  # dynamically create the file name based on the solution ID
+        command = f"python simulate.py {directOrGUI} {self.myID} &"
+        os.system(command)
 
-        # Wait for the fitness file to exist
+    def Wait_For_Simulation_To_End(self):
+        fitnessFileName = f"fitness{str(self.myID)}.txt"
+
+        # Wait for the simulation to finish and the file to be created
         while not os.path.exists(fitnessFileName):
-            time.sleep(0.01)  # Sleep for 0.01 seconds before checking again
+            time.sleep(0.01)  # Wait 10ms before checking again
 
-        # Now, read the fitness from the fitness.txt file
-        with open(fitnessFileName, "r") as fitnessFile:  #open file
-            fitnessValue = fitnessFile.read()  #read the fitness value as a string
+        # Read fitness once file is available
+        with open(fitnessFileName, "r") as fitnessFile:
+            self.fitness = float(fitnessFile.read())
 
-        self.fitness = float(fitnessValue) #convert to float'''
+        # print(f"Solution {self.myID} fitness: {self.fitness}")
 
-        #print(self.fitness)
+        # Delete fitness file to keep directory clean
+        os.system(f"del {fitnessFileName}")
 
     def Mutate(self):
-        # Randomly choose a row (0, 1, or 2) to select a sensor neuron
         randomRow = random.randint(0, 2)
-        # Randomly choose a column (0 or 1) to select a motor neuron
         randomColumn = random.randint(0, 1)
 
         old_value = self.weights[randomRow, randomColumn]  # store the old weight
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
 
-    def Set_ID(self, newID):
-        self.myID = newID
+    def Set_ID(self, nextAvailableID):
+        self.myID = nextAvailableID
+
+    def Create_World(self):
+        # Start generating the SDF file
+        pyrosim.Start_SDF("world.sdf")
+
+        # set variables size and position
+        length = 1
+        width = 1
+        height = 1
+        x = 4
+        y = 2
+        z = 0.5
+
+        # Create Object
+        pyrosim.Send_Cube(name="Box", pos=[x, y, z], size=[length, width, height])
+
+        # Finalize the SDF file
+        pyrosim.End()
+
+    def Generate_Body(self):
+        # Start generating the URDF file
+        pyrosim.Start_URDF("body.urdf")
+
+        pyrosim.Send_Cube(name="Torso", pos=[1.5, 0, 1.5], size=[1, 1, 1])
+        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[1, 0, 1])
+        pyrosim.Send_Cube(name="BackLeg", pos=[-0.5, 0, -0.5],
+                          size=[1, 1, 1])
+        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[2, 0, 1])
+        pyrosim.Send_Cube(name="FrontLeg", pos=[0.5, 0, -0.5],
+                          size=[1, 1, 1])
+
+        # Finalize the URDF file
+        pyrosim.End()
+
+    def Generate_Brain(self):
+        brainFileName = f"brain{self.myID}.nndf"  # Unique filename for each solution
+        # Start generating the URDF file
+        pyrosim.Start_NeuralNetwork(brainFileName)
+
+        # Name neurons with numbers
+        # Create sensor neurons
+        pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
+        pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
+        pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
+
+        # Create motor neurons
+        pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
+        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
+
+        # Create synapses
+        pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3,
+                             weight=1.0)  # this connects neuron 1 to neuron 3 with a synaptic with weight 1.0.
+        pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3,
+                             weight=1.0)  # this connects neuron 2 to neuron 3 with a synaptic with weight 1.0.
+        pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4,
+                             weight=0.5)  # this connects neuron 1 to neuron 4 with a synaptic with weight 1.0.
+        pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4,
+                             weight=0.0)  # this connects neuron 2 to neuron 4 with a synaptic with weight 1.0.
+
+        # Create synapses using nested loops
+        for currentRow in range(3):  # Iterate over sensor neurons 0, 1, 2
+            for currentColumn in range(2):  # Iterate over motor neurons 3, 4
+                random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + 3,
+                                     weight=self.weights[currentRow][currentColumn])
+
+                # print(f"ID {self.myID} weights:\n{self.weights}")
+
+        # Finalize the URDF file
+        pyrosim.End()

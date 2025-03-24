@@ -16,90 +16,74 @@ class PARALLEL_HILL_CLIMBER:
         else:  # Mac/Linux
             os.system("rm fitness*.txt")  # Delete all fitness*.txt files
 
-        #self.parent = SOLUTION() # Create instance of SOLUTION
-        self.parents = {}
         self.nextAvailableID = 0
+        self.parents = {}
 
         for i in range(c.populationSize):  # Iterate from 0 to populationSize - 1
             self.parents[i] = SOLUTION(self.nextAvailableID) # Use loop variable as key, store new SOLUTION() as value
             self.nextAvailableID += 1
 
+
     def Evolve(self):
-        ''''# Call the evaluate method from the parent solution
-        self.parent.Evaluate("DIRECT") # run in blind
+        self.Evaluate(self.parents)
 
-        # Loop through the number of generations
-        for currentGeneration in range(c.numberOfGenerations):   # have -1 because it kept running 1 extra time
-            # Evolve for one generation
-            self.Evolve_For_One_Generation()
-            # Update parent after selection
-            self.parent = copy.deepcopy(self.next_parent)  # Ensure the parent updates for the next generation
-
-        self.parent.Evaluate("GUI")'''
-        batch_size = min(3, c.populationSize)  # Set batch size (adjust as needed)
-
-
-        # Run all parents in batches
-        for i in range(0, c.populationSize, batch_size):
-            batch = list(self.parents.keys())[i:i + batch_size]
-            # Evaluate each parent one after the other in GUI mode
-            for key in batch:
-                 self.parents[key].Start_Simulation("DIRECT")
-
-            for key in batch:
-                 self.parents[key].Wait_For_Simulation_To_End("DIRECT")
-
-            # Loop through generations TEST
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation()
-            #pass
 
     def Evolve_For_One_Generation(self):
-        self.Spawn()  # Generate a new solution (child)
-        '''self.Mutate()  # Apply mutation to the child
-        self.child.Evaluate("DIRECT")  # Evaluate the child
-        self.Select()  # Select the best solution (parent or child)
-        self.Print()'''
-
-        """# Store the child if it's better but do NOT replace parent immediately
-        if self.child.fitness < self.parent.fitness:
-            self.next_parent = self.child  # Store as the next parent, but don't replace yet
-        else:
-            self.next_parent = self.parent  # Keep the same parent if the child isn't better"""
+        self.Spawn()
+        self.Mutate()
+        self.Evaluate(self.children)
+        self.Print()
+        self.Select()
 
     def Spawn(self):
-        self.children = {}  # Create an empty list for children
+        self.children = {}  # Create an empty dictionary to store children
 
-        # Iterate over all parents and spawn children from them
-        for i in self.parents:
-            child = copy.deepcopy(self.parents[i])  # Clone parent into child
-            child.Set_ID(self.nextAvailableID)  # Assign new ID to child
-            self.nextAvailableID += 1  # Increment the ID for the next child
-            #self.children.append(child)  # Add the child to the children list  # Create a deep copy of self.parent and assign it to self.child
-            self.children[i] = child # add child to dictionary with parent key
+        for key in self.parents:
+            self.children[key] = copy.deepcopy(self.parents[key])  # Copy parent
+            self.children[key].Set_ID(self.nextAvailableID)  # Assign new unique ID
+            self.nextAvailableID += 1  # Increment for the next one
 
-        for key, child in self.children.items():
-            print(f"Child {key}: {child.fitness}")
-        exit()
     def Mutate(self):
-
-        self.child.Mutate()  # Call the mutate method of the child
-
+        for key in self.children:
+            self.children[key].Mutate()
 
     def Select(self):
+        # if self.child.fitness < self.parent.fitness:
+        #     self.parent = self.child  # if the child is better replace the parent value with the child value
 
-        # If the child has better fitness, replace the parent with the child
-        if self.child.fitness < self.parent.fitness:
-            #print("Child has better fitness. Replacing parent with child.")
-            self.next_parent = self.child  # Store child as the next parent
-        else:
-            self.next_parent = self.parent  # Keep the current parent if it's better
-            #self.parent = copy.deepcopy(self.child)  # Replace the parent with the child
+        for key in self.parents:
+            if self.children[key].fitness < self.parents[key].fitness:
+                self.parents[key] = self.children[key]
 
     def Print(self):
-        # Print the fitness of self.parent and self.child on the same line
-        print(f"Parent Fitness: {self.parent.fitness}, Child Fitness: {self.child.fitness}")
+        print()  # Print an empty line at the beginning
+        for key in self.parents:
+            print(f"Parent Fitness: {self.parents[key].fitness:.4f} | Child Fitness: {self.children[key].fitness:.4f}")
+        print()  # Print an empty line at the end
 
     def Show_Best(self):
-        #self.parent.Evaluate("GUI")  # show the best evolved solution
-        pass
+        # print("\nRe-evaluating the best solution with GUI...")
+        # self.parent.Evaluate("GUI")  # show the best evolved solution
+
+        bestParent = None
+        bestFitness = float('inf')
+
+        for key in self.parents:
+            if self.parents[key].fitness < bestFitness:
+                bestFitness = self.parents[key].fitness
+                bestParent = self.parents[key]
+
+        print(f"\nBest Fitness: {bestFitness} (Showing best parent in GUI mode...)")
+        bestParent.Start_Simulation("GUI")
+
+    def Evaluate(self, solutions):
+        for key in solutions:
+            solutions[key].Start_Simulation("DIRECT")
+
+        # Wait for all simulations to complete and read fitness
+        for key in solutions:
+            solutions[key].Wait_For_Simulation_To_End()
+            # print(f"Parent {key} fitness: {solutions[key].fitness}")
+            # print("Fitness:", solutions[key].fitness)  # Optional: debugging

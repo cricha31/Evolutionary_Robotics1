@@ -5,8 +5,6 @@ import pybullet as p
 import pybullet_data
 import constants as c
 import time
-# Import pyrosim
-import pyrosim.pyrosim as pyrosim
 # Importing other class files
 from world import WORLD
 from robot import ROBOT
@@ -37,18 +35,21 @@ class SIMULATION:
         ''''# Prepare robot for simulation
         pyrosim.Prepare_To_Simulate(self.robot.robotId)'''
 
-    def Run(self):
-        """Run the simulation loop."""
-        for t in range(c.TIMESTEPS):
+    def __del__(self):
+        p.disconnect()
 
-            p.stepSimulation()  # Step physics simulation
-            self.robot.Sense(t)   # Read sensor values
+
+    def Run(self, steps=c.TIMESTEPS, time_step=c.FRAME_RATE):
+        for t in range(steps):
+            p.stepSimulation()
+            self.robot.Sense(t)  # Robot senses environment
             self.robot.Think()
-            self.robot.Act(t)
-            # Add time.sleep only if in GUI mode (for visualization purposes)
-            if self.directOrGUI == "GUI":
-                time.sleep(c.FRAME_RATE)  # Slow down for real-time visualization
+            self.robot.Act(t)  # Robot acts on environment
+            time.sleep(time_step)  # Slow down to visualize steps
 
+            # Slow the simulation
+            if self.directOrGUI == "GUI":
+                time.sleep(c.FRAME_RATE)
 
 
     '''def __del__(self):

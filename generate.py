@@ -55,13 +55,13 @@ def Generate_Brain():
     pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
     pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
 
-    """""# Generate a synapse
+    # Generate a synapse
     pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3, weight=1)
     # Generate second synapse
     pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3, weight=1)
 
     pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=0.5)
-    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=-1)"""
+    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=0.0)
 
     # Generate synapses using nested loops
     for i in range(3):  # Sensor neurons (0, 1, 2)
@@ -72,6 +72,6 @@ def Generate_Brain():
     # End the URDF generation
     pyrosim.End()
 
-
+Create_World()
 Generate_Body()
 Generate_Brain()

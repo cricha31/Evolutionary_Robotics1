@@ -45,9 +45,7 @@ class ROBOT:
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)   # Create SENSOR instance
 
-    def Sense(self, t):
-        for sensor in self.sensors.values():  # Iterate over all SENSOR instances
-            sensor.Get_Value(t)  # Call Get_Value() on each sensor to update its values
+
 
     def Prepare_To_Act(self):
         '''Initialize the dictionary for motors'''
@@ -56,6 +54,9 @@ class ROBOT:
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)  # Create MOTOR instance
 
+    def Sense(self, t):
+        for sensor in self.sensors.values():  # Iterate over all SENSOR instances
+            sensor.Get_Value(t)  # Call Get_Value() on each sensor to update its values
 
     def Act(self, t):
         for neuronName in self.nn.Get_Neuron_Names():
@@ -65,7 +66,7 @@ class ROBOT:
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
 
                 self.motors[jointName].Set_Value(self, desiredAngle)
-                jointName= jointName.decode("utf-8")
+                #jointName= jointName.decode("utf-8")
 
     def Think(self):
         self.nn.Update()
