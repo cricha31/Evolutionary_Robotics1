@@ -3,13 +3,16 @@ import pyrosim.pyrosim as pyrosim
 import random
 import os
 import time
+import constants as c
+#from generate import Generate_Body
+
 
 class SOLUTION:
     def __init__(self, nextAvailableID):
         self.myID = nextAvailableID
 
         # Generate a 3-row x 2-column matrix with random values in [0,1]
-        self.weights = numpy.random.rand(3, 2)
+        self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
         # Scale to [-1, 1]
         self.weights = self.weights * 2 - 1
 
@@ -62,8 +65,8 @@ class SOLUTION:
         os.system(f"del {fitnessFileName}")
 
     def Mutate(self):
-        randomRow = random.randint(0, 2)
-        randomColumn = random.randint(0, 1)
+        randomRow = random.randint(0, c.numSensorNeurons - 1)
+        randomColumn = random.randint(0, c.numMotorNeurons - 1)
 
         old_value = self.weights[randomRow, randomColumn]  # store the old weight
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
@@ -91,25 +94,27 @@ class SOLUTION:
 
     def Generate_Body(self):
         # Start generating the URDF file
+        if os.path.exists("body.urdf"):
+            os.remove("body.urdf")
+
         pyrosim.Start_URDF("body.urdf")
 
-        pyrosim.Send_Cube(name="Torso", pos=[1.5, 0, 1.5], size=[1, 1, 1])
-        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[1, 0, 1])
-        pyrosim.Send_Cube(name="BackLeg", pos=[-0.5, 0, -0.5],
-                          size=[1, 1, 1])
-        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[2, 0, 1])
-        pyrosim.Send_Cube(name="FrontLeg", pos=[0.5, 0, -0.5],
-                          size=[1, 1, 1])
+        pyrosim.Send_Cube(name="Torso", pos=[0.0, 0.0, 1.0], size=[1, 1, 1])
+
+        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[0, -0.5, 1], jointAxis="0 1 0")
+        pyrosim.Send_Cube(name="BackLeg", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
+        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[0, 0.5, 1], jointAxis="0 1 0")
+        pyrosim.Send_Cube(name="FrontLeg", pos=[0, 0.5, 0], size=[0.2, 1, 0.2])
 
         # Finalize the URDF file
         pyrosim.End()
+
 
     def Generate_Brain(self):
         brainFileName = f"brain{self.myID}.nndf"  # Unique filename for each solution
         # Start generating the URDF file
         pyrosim.Start_NeuralNetwork(brainFileName)
 
-        # Name neurons with numbers
         # Create sensor neurons
         pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
         pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
@@ -130,9 +135,9 @@ class SOLUTION:
                              weight=0.0)  # this connects neuron 2 to neuron 4 with a synaptic with weight 1.0.
 
         # Create synapses using nested loops
-        for currentRow in range(3):  # Iterate over sensor neurons 0, 1, 2
-            for currentColumn in range(2):  # Iterate over motor neurons 3, 4
-                random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
+        for currentRow in range(c.numSensorNeurons):  # Iterate over sensor neurons 0, 1, 2
+            for currentColumn in range(c.numMotorNeurons):  # Iterate over motor neurons 3, 4
+                #random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
                 pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + 3,
                                      weight=self.weights[currentRow][currentColumn])
 
@@ -140,3 +145,4 @@ class SOLUTION:
 
         # Finalize the URDF file
         pyrosim.End()
+

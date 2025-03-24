@@ -12,11 +12,14 @@ from motor import MOTOR
 import time
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 from generate import Generate_Body as GB
+from solution import SOLUTION
 class ROBOT:
 
     def __init__(self, solutionID):
         self.solutionID = solutionID
-        GB()
+        self.solution = SOLUTION(solutionID)
+        self.solution.Generate_Body() # attempt to change body file - worked to use solutions now
+        #GB()
 
         # Loads the robot body and prepares it for simulation.
         self.robotId = p.loadURDF("body.urdf")  # Load robot URDF
