@@ -18,7 +18,7 @@ class ROBOT:
     def __init__(self, solutionID):
         self.solutionID = solutionID
         self.solution = SOLUTION(solutionID)
-        self.solution.Generate_Body() # attempt to change body file - worked to use solutions now
+        self.solution.Generate_Body()
         #GB()
 
         # Loads the robot body and prepares it for simulation.

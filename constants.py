@@ -14,9 +14,9 @@ FREQUENCY_BACK_LEG = 20
 PHASE_OFFSET_BACK_LEG = 0
 
 # Motor control parameters for FrontLeg  -- changed to 0 for better movement now
-AMPLITUDE_FRONT_LEG = 0 #numpy.pi / 4
-FREQUENCY_FRONT_LEG = 0 #10
-PHASE_OFFSET_FRONT_LEG = 0 #numpy.pi  # Phase shifted by pi
+AMPLITUDE_FRONT_LEG = numpy.pi / 4  #0
+FREQUENCY_FRONT_LEG = 10     #0
+PHASE_OFFSET_FRONT_LEG = numpy.pi  # Phase shifted by pi  0
 
 # Simulation parameters
 GRAVITY = -9.8
@@ -29,5 +29,5 @@ numberOfGenerations = 1
 populationSize = 1
 
 # Neurons
-numSensorNeurons = 3
-numMotorNeurons = 2
+numSensorNeurons = 8
+numMotorNeurons = 7
