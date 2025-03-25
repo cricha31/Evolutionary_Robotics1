@@ -29,14 +29,16 @@ class PARALLEL_HILL_CLIMBER:
 
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation()
+        #for key in self.parents:  # Iterate through each parent-child pair
+         #   if self.children[key].fitness < self.parents[key].fitness:
+          #      self.parents[key] = self.children[key]
 
     def Evolve_For_One_Generation(self):
         self.Spawn()
         self.Mutate()
         self.Evaluate(self.children)
-        self.Print()
         self.Select()
-
+        self.Print()
     def Spawn(self):
         self.children = {}  # Create an empty dictionary to store children
 
@@ -46,13 +48,10 @@ class PARALLEL_HILL_CLIMBER:
             self.nextAvailableID += 1  # Increment for the next one
 
     def Mutate(self):
-        for key in self.children:
-            self.children[key].Mutate()
+        for child in self.children.keys():
+            self.children[child].Mutate()
 
     def Select(self):
-        # if self.child.fitness < self.parent.fitness:
-        #     self.parent = self.child  # if the child is better replace the parent value with the child value
-
         for key in self.parents:
             if self.children[key].fitness < self.parents[key].fitness:
                 self.parents[key] = self.children[key]
@@ -75,8 +74,13 @@ class PARALLEL_HILL_CLIMBER:
                 bestFitness = self.parents[key].fitness
                 bestParent = self.parents[key]
 
+
         print(f"\nBest Fitness: {bestFitness} (Showing best parent in GUI mode...)")
         bestParent.Start_Simulation("GUI")
+        '''
+    def Show_Best(self):
+        best_key = min(self.parents, key=lambda k: self.parents[k].fitness) #find parent with lowest fitness
+        self.parents[best_key].Start_Simulation("GUI") #print simulation in GUI for the best'''
 
     def Evaluate(self, solutions):
         for key in solutions:

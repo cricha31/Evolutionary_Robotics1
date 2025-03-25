@@ -40,7 +40,7 @@ class SIMULATION:
         p.disconnect()
 
 
-    def Run(self, steps=c.TIMESTEPS, time_step=c.FRAME_RATE):
+    '''def Run(self, steps=c.TIMESTEPS, time_step=c.FRAME_RATE):
         for t in range(steps):
             p.stepSimulation()
             self.robot.Sense(t)  # Robot senses environment
@@ -50,8 +50,23 @@ class SIMULATION:
 
             # Slow the simulation
             if self.directOrGUI == "GUI":
-                time.sleep(c.FRAME_RATE)
+                time.sleep(c.FRAME_RATE)'''
+    def Run(self, directOrGUI):
+        for t in range(c.TIMESTEPS):
+            p.stepSimulation()
+            #call robot method sense
+            self.robot.Sense(t)
+            # allow the robot to think
+            self.robot.Think()
+            #call the motors
+            self.robot.Act(t)
+            #slow down the simulation
+            #time.sleep(c.sleep)
 
+            if directOrGUI == "GUI":
+                time.sleep(c.SLOWER)
+            else:
+                time.sleep(c.FRAME_RATE)
 
     '''def __del__(self):
 

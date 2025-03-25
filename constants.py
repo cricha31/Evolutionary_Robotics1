@@ -22,12 +22,13 @@ PHASE_OFFSET_FRONT_LEG = numpy.pi  # Phase shifted by pi  0
 GRAVITY = -9.8
 TIMESTEPS = 500 # increased to 500 (gets better fitness but takes longer)
 MAX_FORCE = 50
-FRAME_RATE = 1 / 500  # 60 FPS (looking at increase this to see if it takes less time with same results)
-
+FRAME_RATE = 1 / 500 # 60 FPS (looking at increase this to see if it takes less time with same results)
+SLOWER = 1/1000
 # Parameter for spawn generations
 numberOfGenerations = 1
-populationSize = 1
+populationSize = 2
 
 # Neurons
-numSensorNeurons = 8
+numSensorNeuron = 8
 numMotorNeurons = 7
+motorJointRange = 0.2

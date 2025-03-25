@@ -17,12 +17,12 @@ class ROBOT:
 
     def __init__(self, solutionID):
         self.solutionID = solutionID
-        self.solution = SOLUTION(solutionID)
-        self.solution.Generate_Body()
+        #self.solution = SOLUTION(solutionID)
+        #self.solution.Generate_Body()
         #GB()
 
         # Loads the robot body and prepares it for simulation.
-        self.robotId = p.loadURDF("body.urdf")  # Load robot URDF
+        self.robotId = p.loadURDF(f"body{solutionID}.urdf")  # Load robot URDF
 
         # Prepare robot for simulation
         pyrosim.Prepare_To_Simulate(self.robotId)
@@ -66,7 +66,7 @@ class ROBOT:
             if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName).encode("utf-8")
                 # Extract the value (desired angle) for this motor neuron
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
+                desiredAngle = self.nn.Get_Value_Of(neuronName) * c.motorJointRange
 
                 self.motors[jointName].Set_Value(self, desiredAngle)
                 #jointName= jointName.decode("utf-8")
