@@ -25,8 +25,8 @@ MAX_FORCE = 50
 FRAME_RATE = 1 / 500  # 60 FPS (looking at increase this to see if it takes less time with same results)
 
 # Parameter for spawn generations
-numberOfGenerations = 3
-populationSize = 3
+numberOfGenerations = 1
+populationSize = 1
 
 # Neurons
 numSensorNeurons = 8

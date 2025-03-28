@@ -14,60 +14,88 @@ def Create_World():
 
 
 def Generate_Body():
-    # Start creating the robot description in URDF format
+
     pyrosim.Start_URDF("body.urdf")
+    # Torso
+    pyrosim.Send_Cube(name="Torso", pos=[0.0, 0.0, 1.0], size=[1, 1, 1])
 
-    # Block dimensions
-    length = 1
-    width = 1
-    height = 1
+    # Front leg
+    # Upper leg
+    pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[0, 0.5, 1],
+                       jointAxis="1 0 0")
+    pyrosim.Send_Cube(name="FrontLeg", pos=[0, 0.5, 0], size=[0.2, 1, 0.2])
+    # Lower leg
+    pyrosim.Send_Joint(name="FrontLeg_Lower", parent="FrontLeg", child="FrontLowerLeg", type="revolute",
+                       position=[0, 1, 0], jointAxis="1 0 0")  # Rotates forward-backward
+    pyrosim.Send_Cube(name="FrontLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
 
-    # Create the root cube (Torso)
-    pyrosim.Send_Cube(name="Torso", pos=[0, 0, 1.5], size=[length, width, height])
+    # Back Leg
+    # Upper
+    pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[0, -0.5, 1],
+                       jointAxis="1 0 0")
+    pyrosim.Send_Cube(name="BackLeg", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
+    # Lower
+    pyrosim.Send_Joint(name="BackLeg_Lower", parent="BackLeg", child="BackLowerLeg", type="revolute",
+                       position=[0, -1, 0], jointAxis="1 0 0")
+    pyrosim.Send_Cube(name="BackLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
 
-    # Create Joint between Torso and BackLeg
-    pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[0.5, 0, 1], jointAxis = "0 1 0")
+    # Left Leg
+    # Upper
+    pyrosim.Send_Joint(name="Torso_LeftLeg", parent="Torso", child="LeftLeg", type="revolute",
+                       position=[-0.5, 0, 1], jointAxis="0 1 0")
+    pyrosim.Send_Cube(name="LeftLeg", pos=[-0.5, 0, 0], size=[1, 0.2, 0.2])
+    # Lower
+    pyrosim.Send_Joint(name="LeftLeg_Lower", parent="LeftLeg", child="LeftLowerLeg", type="revolute",
+                       position=[-1, 0, 0], jointAxis="1 0 0")
+    pyrosim.Send_Cube(name="LeftLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
 
-    # Create BackLeg
-    pyrosim.Send_Cube(name="BackLeg", pos=[0.5, 0, -0.5], size=[length, width, height])
+    # Right leg
+    # Upper
+    pyrosim.Send_Joint(name="Torso_RightLeg", parent="Torso", child="RightLeg", type="revolute",
+                       position=[0.5, 0, 1], jointAxis="0 1 0")  # Rotates forward-backward
+    pyrosim.Send_Cube(name="RightLeg", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
+    # Lower
+    pyrosim.Send_Joint(name="RightLeg_Lower", parent="RightLeg", child="RightLowerLeg", type="revolute",
+                       position=[1, 0, 0], jointAxis="1 0 0")
+    pyrosim.Send_Cube(name="RightLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
 
-    # Create joint between Torso and FrontLeg
-    pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[-0.5, 0, 1], jointAxis = "0 1 0")
-
-    # Create FrontLeg
-    pyrosim.Send_Cube(name="FrontLeg", pos=[-0.5, 0, -0.5], size=[length, width, height])
-
-    # End the URDF generation
+    # Finalize the URDF file
     pyrosim.End()
-
-    # CAN ADD IN WORLD.SDF IF NEED TO ADD THE EXTRA BOX BUT IT IS BUILT INTO WORLD FILE ALREADY
-
 
 
 def Generate_Brain():
-    # Start creating the brain neural network
+    # Start generating the URDF file
     pyrosim.Start_NeuralNetwork("brain.nndf")
 
+    # Create sensor neurons
     pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
     pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
     pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
+    pyrosim.Send_Sensor_Neuron(name=3, linkName="LeftLeg")
+    pyrosim.Send_Sensor_Neuron(name=4, linkName="RightLeg")
+    pyrosim.Send_Sensor_Neuron(name=5, linkName="FrontLowerLeg")
+    pyrosim.Send_Sensor_Neuron(name=6, linkName="BackLowerLeg")
+    pyrosim.Send_Sensor_Neuron(name=7, linkName="LeftLowerLeg")
+    pyrosim.Send_Sensor_Neuron(name=8, linkName="RightLowerLeg")
 
-    pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
-    pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
+    # Create motor neurons
+    pyrosim.Send_Motor_Neuron(name=9, jointName="Torso_BackLeg")
+    pyrosim.Send_Motor_Neuron(name=10, jointName="Torso_FrontLeg")
+    pyrosim.Send_Motor_Neuron(name=11, jointName="Torso_LeftLeg")
+    pyrosim.Send_Motor_Neuron(name=12, jointName="Torso_RightLeg")
+    pyrosim.Send_Motor_Neuron(name=13, jointName="FrontLeg_Lower")
+    pyrosim.Send_Motor_Neuron(name=14, jointName="BackLeg_Lower")
+    pyrosim.Send_Motor_Neuron(name=15, jointName="LeftLeg_Lower")
+    pyrosim.Send_Motor_Neuron(name=16, jointName="RightLeg_Lower")
 
-    # Generate a synapse
-    pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3, weight=1)
-    # Generate second synapse
-    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3, weight=1)
-
-    pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4, weight=0.5)
-    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4, weight=0.0)
+    # assign variables
+    sensor_neurons = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # IDs of sensor neurons
+    motor_neurons = [9, 10, 11, 12, 13, 14, 15]  # IDs of motor neurons
 
     # Generate synapses using nested loops
-    for i in range(3):  # Sensor neurons (0, 1, 2)
-        for j in range(3, 5):  # Motor neurons (3, 4)
-            weight = random.uniform(-1, 1)  # Generate a random weight in [-1,1]
-            pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=weight)
+    for i in sensor_neurons:
+        for j in motor_neurons:
+            pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=random.uniform(-1, 1))
 
     # End the URDF generation
     pyrosim.End()

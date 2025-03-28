@@ -9,12 +9,12 @@ import constants as c
 
 class SOLUTION:
     def __init__(self, nextAvailableID):
-        self.myID = nextAvailableID
-
         # Generate a 3-row x 2-column matrix with random values in [0,1]
         self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
         # Scale to [-1, 1]
         #self.weights = self.weights * 2 - 1
+        self.fitness = None
+        self.myID = nextAvailableID
 
     def Evaluate(self, directOrGUI):
         self.Create_World()
@@ -53,7 +53,7 @@ class SOLUTION:
 
         # Wait for the simulation to finish and the file to be created
         while not os.path.exists(fitnessFileName):
-            time.sleep(0.01)  # Wait 10ms before checking again
+            time.sleep(0.1)  # Wait 10ms before checking again
 
         # Read fitness once file is available
         with open(fitnessFileName, "r") as fitnessFile:
@@ -154,21 +154,29 @@ class SOLUTION:
         pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
         pyrosim.Send_Sensor_Neuron(name=3, linkName="LeftLeg")
         pyrosim.Send_Sensor_Neuron(name=4, linkName="RightLeg")
-        pyrosim.Send_Sensor_Neuron(name=4, linkName="FrontLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name=4, linkName="BackLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name=4, linkName="LeftLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name=4, linkName="RightLowerLeg")
+        pyrosim.Send_Sensor_Neuron(name=5, linkName="FrontLowerLeg")
+        pyrosim.Send_Sensor_Neuron(name=6, linkName="BackLowerLeg")
+        pyrosim.Send_Sensor_Neuron(name=7, linkName="LeftLowerLeg")
+        pyrosim.Send_Sensor_Neuron(name=8, linkName="RightLowerLeg")
 
         # Create motor neurons
-        pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
-        pyrosim.Send_Motor_Neuron(name=5, jointName="Torso_LeftLeg")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="Torso_RightLeg")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="FrontLeg_Lower")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="BackLeg_Lower")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="LeftLeg_Lower")
-        pyrosim.Send_Motor_Neuron(name=6, jointName="RightLeg_Lower")
+        pyrosim.Send_Motor_Neuron(name=9, jointName="Torso_BackLeg")
+        pyrosim.Send_Motor_Neuron(name=10, jointName="Torso_FrontLeg")
+        pyrosim.Send_Motor_Neuron(name=11, jointName="Torso_LeftLeg")
+        pyrosim.Send_Motor_Neuron(name=12, jointName="Torso_RightLeg")
+        pyrosim.Send_Motor_Neuron(name=13, jointName="FrontLeg_Lower")
+        pyrosim.Send_Motor_Neuron(name=14, jointName="BackLeg_Lower")
+        pyrosim.Send_Motor_Neuron(name=15, jointName="LeftLeg_Lower")
+        pyrosim.Send_Motor_Neuron(name=16, jointName="RightLeg_Lower")
 
+        # assign variables
+        sensor_neurons = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # IDs of sensor neurons
+        motor_neurons = [9, 10, 11, 12, 13, 14, 15, 16]  # IDs of motor neurons
+
+        # Generate synapses using nested loops
+        '''for i in sensor_neurons:
+            for j in motor_neurons:
+                pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=random.uniform(-1, 1))'''
 
         # Create synapses using nested loops
         for currentRow in range(c.numSensorNeurons):  # Iterate over sensor neurons 0, 1, 2
@@ -180,5 +188,5 @@ class SOLUTION:
                 # print(f"ID {self.myID} weights:\n{self.weights}")
 
         # Finalize the URDF file
-        pyrosim.End()
+        #pyrosim.End()
 

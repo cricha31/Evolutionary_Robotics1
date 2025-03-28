@@ -17,8 +17,8 @@ class ROBOT:
 
     def __init__(self, solutionID):
         self.solutionID = solutionID
-        self.solution = SOLUTION(solutionID)
-        self.solution.Generate_Body()
+        #self.solution = SOLUTION(solutionID)
+        #self.solution.Generate_Body()
         #GB()
 
         # Loads the robot body and prepares it for simulation.
@@ -41,6 +41,9 @@ class ROBOT:
             os.system(f"del {brain_filename}")
         else:  # Mac/Linux
             os.system(f"rm {brain_filename}")
+            '''
+        os.system(f"del {brain_filename}")'''
+
     def Prepare_To_Sense(self):
         """Initialize the dictionary for sensors."""
         self.sensors = {}
@@ -64,12 +67,16 @@ class ROBOT:
     def Act(self, t):
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
-                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName).encode("utf-8")
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
                 # Extract the value (desired angle) for this motor neuron
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
 
                 self.motors[jointName].Set_Value(self, desiredAngle)
                 #jointName= jointName.decode("utf-8")
+
+
+
+
 
     def Think(self):
         self.nn.Update()
