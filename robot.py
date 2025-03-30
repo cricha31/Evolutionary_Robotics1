@@ -11,7 +11,7 @@ from sensor import SENSOR
 from motor import MOTOR
 import time
 from pyrosim.neuralNetwork import NEURAL_NETWORK
-from generate import Generate_Body as GB
+#from generate import Generate_Body as GB
 from solution import SOLUTION
 class ROBOT:
 
