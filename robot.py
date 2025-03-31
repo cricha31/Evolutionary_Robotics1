@@ -11,15 +11,15 @@ from sensor import SENSOR
 from motor import MOTOR
 import time
 from pyrosim.neuralNetwork import NEURAL_NETWORK
-from generate import Generate_Body as GB
+#from generate import Generate_Body as GB
 class ROBOT:
 
     def __init__(self, solutionID):
         self.solutionID = solutionID
-        GB()
+        #GB()
 
         # Loads the robot body and prepares it for simulation.
-        self.robotId = p.loadURDF("body.urdf")  # Load robot URDF
+        self.robotId = p.loadURDF("body1.urdf")  # Load robot URDF
 
         # Prepare robot for simulation
         pyrosim.Prepare_To_Simulate(self.robotId)
@@ -61,11 +61,14 @@ class ROBOT:
     def Act(self, t):
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
-                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName).encode("utf-8")
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
                 # Extract the value (desired angle) for this motor neuron
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
+                desiredAngle = self.nn.Get_Value_Of(neuronName) * c.motorJointRange
 
-                self.motors[jointName].Set_Value(self, desiredAngle)
+                # Ensure the jointName is a decoded string, in case it's a byte string
+                decoded_joint_name = jointName.decode("utf-8") if isinstance(jointName, bytes) else jointName
+
+                self.motors[decoded_joint_name].Set_Value(self, desiredAngle)
                 #jointName= jointName.decode("utf-8")
 
     def Think(self):

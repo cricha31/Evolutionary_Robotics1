@@ -6,10 +6,11 @@ import os
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
         # Delete all nndf files
-        if os.name == "nt":  # Windows
-            os.system("del brain*.nndf")  # Delete all brain*.nndf files
-        else:  # Mac/Linux
-            os.system("rm brain*.nndf")  # Delete all brain*.nndf files
+        #if os.name == "nt":  # Windows
+         #   os.system("del brain*.nndf")  # Delete all brain*.nndf files
+        #else:  # Mac/Linux
+         #   os.system("rm brain*.nndf")  # Delete all brain*.nndf files
+
         # Delete all fitness files
         if os.name == "nt":  # Windows
             os.system("del fitness*.txt")  # Delete all fitness*.txt files

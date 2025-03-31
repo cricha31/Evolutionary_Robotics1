@@ -72,6 +72,6 @@ def Generate_Brain():
     # End the URDF generation
     pyrosim.End()
 
-Create_World()
-Generate_Body()
-Generate_Brain()
+#Create_World()
+#Generate_Body()
+#Generate_Brain()

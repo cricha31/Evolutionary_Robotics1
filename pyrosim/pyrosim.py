@@ -61,43 +61,29 @@ def Get_Touch_Sensor_Value_For_Link(linkName):
     return touchValue
 
 def Prepare_Link_Dictionary(bodyID):
-
     global linkNamesToIndices
-
     linkNamesToIndices = {}
 
-    for jointIndex in range( 0 , p.getNumJoints(bodyID) ):
+    # Explicitly add the root link (Torso) with index -1
+    linkNamesToIndices["Torso"] = -1
 
-        jointInfo = p.getJointInfo( bodyID , jointIndex )
+    for jointIndex in range(p.getNumJoints(bodyID)):
+        jointInfo = p.getJointInfo(bodyID, jointIndex)
+        jointName = jointInfo[1].decode("utf-8")
 
-        jointName = jointInfo[1]
+        # Get the child link name from the joint info
+        childLinkName = jointInfo[12].decode("utf-8")
 
-        jointName = jointName.decode("utf-8")
-
-        jointName = jointName.split("_")
-
-        linkName = jointName[1]
-
-        linkNamesToIndices[linkName] = jointIndex
-
-        if jointIndex==0:
-
-           rootLinkName = jointName[0]
-
-           linkNamesToIndices[rootLinkName] = -1 
+        # Map the child link name to the joint index
+        linkNamesToIndices[childLinkName] = jointIndex
 
 def Prepare_Joint_Dictionary(bodyID):
-
     global jointNamesToIndices
-
     jointNamesToIndices = {}
 
-    for jointIndex in range( 0 , p.getNumJoints(bodyID) ):
-
-        jointInfo = p.getJointInfo( bodyID , jointIndex )
-
-        jointName = jointInfo[1]
-
+    for jointIndex in range(p.getNumJoints(bodyID)):
+        jointInfo = p.getJointInfo(bodyID, jointIndex)
+        jointName = jointInfo[1].decode("utf-8")  # Properly decode the byte string
         jointNamesToIndices[jointName] = jointIndex
 
 def Prepare_To_Simulate(bodyID):
@@ -134,11 +120,11 @@ def Send_Cube(name="default",pos=[0,0,0],size=[1,1,1]):
 
     availableLinkIndex = availableLinkIndex + 1
 
-def Send_Joint(name,parent,child,type,position):
+def Send_Joint(name,parent,child,type,position,jointAxis):
 
     joint = JOINT(name,parent,child,type,position)
 
-    joint.Save(f)
+    joint.Save(f,jointAxis)
 
 def Send_Motor_Neuron(name,jointName):
 
