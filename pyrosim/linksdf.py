@@ -10,9 +10,12 @@ from pyrosim.commonFunctions import Save_Whitespace
 
 class LINK_SDF:
 
-    def __init__(self,name,pos,size):
+    def __init__(self,name,pos,size,rpy):
 
         self.name = name
+        self.pos = pos  # Store the position
+        self.size = size  # Store the size
+        self.rpy = rpy  # Store the roll, pitch, yaw
 
         self.depth = 2
 
@@ -27,6 +30,9 @@ class LINK_SDF:
     def Save(self,f):
 
         self.Save_Start_Tag(f)
+
+        # Write the position and rotation (roll, pitch, yaw)
+        f.write(f'    <pose>{self.pos[0]} {self.pos[1]} {self.pos[2]} {self.rpy[0]} {self.rpy[1]} {self.rpy[2]}</pose>\n')
 
         self.inertial.Save(f)
 

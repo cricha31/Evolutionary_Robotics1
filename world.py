@@ -14,5 +14,5 @@ class WORLD:
         self.planeId = p.loadURDF("plane.urdf")
 
         # Load the world with additional objects
-        p.loadSDF("world.sdf")
+        p.loadSDF("runway.sdf")
 

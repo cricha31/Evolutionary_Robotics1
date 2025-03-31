@@ -73,18 +73,21 @@ class SOLUTION:
 
     def Create_World(self):
         # Start generating the SDF file
-        pyrosim.Start_SDF("world.sdf")
+        pyrosim.Start_SDF("runway.sdf")
 
         # set variables size and position
-        length = 1
-        width = 1
-        height = 1
-        x = 4
-        y = 2
-        z = 0.5
+        length = 20
+        width = 4
+        height = 5
+        x = -14
+        y = 1.5
+        z = 2.5
+
+        # Calculate rotation (yaw) in radians (45 degrees = π/4)
+        yaw = 1 # 45 degrees in radians
 
         # Create Object
-        pyrosim.Send_Cube(name="Box", pos=[x, y, z], size=[length, width, height])
+        pyrosim.Send_Cube(name="Runway", pos=[x, y, z], size=[length, width, height], rpy=[0, 0, yaw])
 
         # Finalize the SDF file
         pyrosim.End()
