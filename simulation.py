@@ -20,6 +20,14 @@ class SIMULATION:
         # Initialize the simulation based on the mode
         if self.directOrGUI == "GUI":
             self.physicsClient = p.connect(p.GUI)  # Heads-up mode
+            # Set the camera parameters: distance, yaw, pitch, target
+            p.resetDebugVisualizerCamera(
+                cameraDistance=8,  # Zoom level
+                cameraYaw=90,  # Rotation around Z axis
+                cameraPitch=-39,  # Angle down toward object (-89 is nearly overhead)
+                cameraTargetPosition=[0, 0, 6]  # Where the camera is centered
+            )
+
         else:
             self.physicsClient = p.connect(p.DIRECT)  # Blind mode
 

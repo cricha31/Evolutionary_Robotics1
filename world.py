@@ -14,5 +14,5 @@ class WORLD:
         self.planeId = p.loadURDF("plane.urdf")
 
         # Load the world with additional objects
-        p.loadSDF("runway.sdf")
-
+        self.runwayId = p.loadSDF("runway.sdf")[0]
+        p.changeDynamics(self.runwayId, -1, mass=0)  # Makes the runway immovable
