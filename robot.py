@@ -16,7 +16,7 @@ class ROBOT:
 
     def __init__(self, solutionID):
         self.solutionID = solutionID
-        #GB()
+        self.fitness = 0.0
 
         # Loads the robot body and prepares it for simulation.
         self.robotId = p.loadURDF("body1.urdf")  # Load robot URDF
@@ -75,23 +75,28 @@ class ROBOT:
         self.nn.Update()
         #self.nn.Print()
 
-    def Get_Fitness(self):
-        # Get the state of the first link (link zero)
+    def Update_Fitness(self):
         stateOfLinkZero = p.getLinkState(self.robotId, 0)
-
-        # Get the state of the first link (link zero)
         positionOfLinkZero = stateOfLinkZero[0]
 
-        # Extract the x coordinate (first element) from positionOfLinkZero
-        xCoordinateOfLinkZero = positionOfLinkZero[0]
+        x = positionOfLinkZero[0]
+        y = positionOfLinkZero[1]
 
-        # Write the x coordinate to a file (fitness.txt)
+        platform_half_width = 2.0
+        alpha = 2.0
+        beta = 1.0
+
+        centered_penalty = beta * (abs(y) / platform_half_width)
+        fitness_step = alpha * x - centered_penalty
+
+        self.fitness += fitness_step
+
+    def Get_Fitness(self):
+        avg_fitness = self.fitness / c.TIMESTEPS
+
         tmp_fitness_file = f"tmp{self.solutionID}.txt"
         with open(tmp_fitness_file, "w") as file:
-            file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
+            file.write(str(avg_fitness))
         time.sleep(0.01)
 
-        os.rename("tmp" + str(self.solutionID) + ".txt", "fitness" + str(self.solutionID) + ".txt")
-
-
-
+        os.rename(f"tmp{self.solutionID}.txt", f"fitness{self.solutionID}.txt")

@@ -54,6 +54,10 @@ class SIMULATION:
             self.robot.Sense(t)  # Robot senses environment
             self.robot.Think()
             self.robot.Act(t)  # Robot acts on environment
+
+            # Update the robot's fitness after each timestep
+            self.robot.Update_Fitness()  # This is where fitness gets updated
+
             time.sleep(time_step)  # Slow down to visualize steps
 
             # Slow the simulation

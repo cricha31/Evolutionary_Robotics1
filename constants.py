@@ -20,9 +20,9 @@ PHASE_OFFSET_FRONT_LEG = 0 #numpy.pi  # Phase shifted by pi
 
 # Simulation parameters
 GRAVITY = -9.8
-TIMESTEPS = 1000 # increased to 500 (gets better fitness but takes longer)
+TIMESTEPS = 4000 # increased to 500 (gets better fitness but takes longer)
 MAX_FORCE = 150   #50
-FRAME_RATE = 1 / 10000  # 60 FPS (looking at increase this to see if it takes less time with same results)
+FRAME_RATE = 1 / 40000  # 60 FPS (looking at increase this to see if it takes less time with same results)
 
 # Parameter for spawn generations
 numberOfGenerations = 10
