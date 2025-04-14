@@ -63,8 +63,8 @@ class SIMULATION:
             # Slow the simulation
             if self.directOrGUI == "GUI":
                 time.sleep(1 / 240)
-            else:
-                time.sleep(c.FRAME_RATE)
+            #else:
+                #time.sleep(c.FRAME_RATE)
 
     '''def __del__(self):
 
