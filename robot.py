@@ -84,7 +84,7 @@ class ROBOT:
 
         platform_half_width = 2.0
         alpha = 2.0
-        beta = 1.0
+        beta = 1.5
 
         centered_penalty = beta * (abs(y) / platform_half_width)
         fitness_step = alpha * x - centered_penalty
