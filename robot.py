@@ -84,10 +84,16 @@ class ROBOT:
 
         platform_half_width = 2.0
         alpha = 2.0
-        beta = 1.0
+        #beta = 1.0
 
-        centered_penalty = beta * (abs(y) / platform_half_width)
-        fitness_step = alpha * x - centered_penalty
+        if abs(y) > platform_half_width:
+            self.fitness +=100
+            return
+
+
+        # centered_penalty = beta * (abs(y) / platform_half_width)
+
+        fitness_step = alpha * x #- centered_penalty
 
         self.fitness += fitness_step
 
