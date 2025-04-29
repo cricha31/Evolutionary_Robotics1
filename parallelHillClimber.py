@@ -90,19 +90,29 @@ class PARALLEL_HILL_CLIMBER:
 
     # plot fitness graph at the end
     def Plot_Fitness_History(self):
-        y = self.fitnessHistory
+        y = np.array(self.fitnessHistory)
         x = np.arange(len(y))
 
-        # Fit a line (1st degree polynomial)
-        slope, intercept = np.polyfit(x, y, 1)
+        # Reversed normalization: best (lowest value) = 1, worst (highest value) = 0
+        y_min = np.min(y)  # Best fitness (most negative)
+        y_max = np.max(y)  # Worst fitness (most positive)
+
+        if y_max - y_min != 0:
+            y_norm = (y_max - y) / (y_max - y_min)
+        else:
+            y_norm = np.ones_like(y)  # All values are the same, treat them as perfect
+
+        # Fit a linear trend line to normalized data
+        slope, intercept = np.polyfit(x, y_norm, 1)
         trend_line = slope * x + intercept
 
-        plt.plot(x, y, label="Fitness")
-        plt.plot(x, trend_line, 'r--', label=f"Trend Line (slope = {slope:.2f})")
+        # Plotting
+        plt.plot(x, y_norm, label="Normalized Fitness (Best = 1)")
+        plt.plot(x, trend_line, 'r--', label=f"Trend Line (slope = {slope:.4f})")
 
-        plt.title("Average Parent Fitness Over Generations: A")
+        plt.title("Normalized Fitness Over Generations: Test A")
         plt.xlabel("Generation")
-        plt.ylabel("Average Fitness")
+        plt.ylabel("Normalized Fitness (Reversed)")
         plt.grid(True)
         plt.legend()
         plt.show()
