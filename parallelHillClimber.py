@@ -86,8 +86,7 @@ class PARALLEL_HILL_CLIMBER:
 
     # plot fitness graph at the end
     def Plot_Fitness_History(self):
-        pass
-        '''y = self.fitnessHistory
+        y = self.fitnessHistory
         x = np.arange(len(y))
 
         # Fit a line (1st degree polynomial)
@@ -102,4 +101,4 @@ class PARALLEL_HILL_CLIMBER:
         plt.ylabel("Average Fitness")
         plt.grid(True)
         plt.legend()
-        plt.show()'''
+        plt.show()
