@@ -3,6 +3,7 @@ import constants as c
 import copy
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
@@ -85,9 +86,20 @@ class PARALLEL_HILL_CLIMBER:
 
     # plot fitness graph at the end
     def Plot_Fitness_History(self):
-        plt.plot(self.fitnessHistory)
-        plt.title("Average Parent Fitness Over Generations")
+        pass
+        '''y = self.fitnessHistory
+        x = np.arange(len(y))
+
+        # Fit a line (1st degree polynomial)
+        slope, intercept = np.polyfit(x, y, 1)
+        trend_line = slope * x + intercept
+
+        plt.plot(x, y, label="Fitness")
+        plt.plot(x, trend_line, 'r--', label=f"Trend Line (slope = {slope:.2f})")
+
+        plt.title("Average Parent Fitness Over Generations: B")
         plt.xlabel("Generation")
         plt.ylabel("Average Fitness")
         plt.grid(True)
-        plt.show()
+        plt.legend()
+        plt.show()'''
