@@ -4,6 +4,7 @@ import copy
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import glob
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
@@ -84,31 +85,35 @@ class PARALLEL_HILL_CLIMBER:
         averageFitness = totalFitness / len(self.parents)
         self.fitnessHistory.append(averageFitness)
 
-    # plot fitness graph at the end
     def Plot_Fitness_History(self):
-        y = np.array(self.fitnessHistory)
-        x = np.arange(len(y))
+        # Save current trial to a unique file
+        trial_num = len(glob.glob("fitness_history_trial_*.txt"))
+        with open(f"fitness_history_trial_{trial_num}.txt", "w") as f:
+            for fitness in self.fitnessHistory:
+                f.write(f"{fitness}\n")
 
-        # Reversed normalization: best (lowest value) = 1, worst (highest value) = 0
-        y_min = np.min(y)  # Best fitness (most negative)
-        y_max = np.max(y)  # Worst fitness (most positive)
+        # Plot all previous trials
+        plt.figure(figsize=(8, 6))
 
-        if y_max - y_min != 0:
-            y_norm = (y_max - y) / (y_max - y_min)
-        else:
-            y_norm = np.ones_like(y)  # All values are the same, treat them as perfect
+        for filename in sorted(glob.glob("fitness_history_trial_*.txt")):
+            with open(filename, "r") as f:
+                y = np.array([float(line.strip()) for line in f.readlines()])
 
-        # Fit a linear trend line to normalized data
-        slope, intercept = np.polyfit(x, y_norm, 1)
-        trend_line = slope * x + intercept
+            x = np.linspace(0, 50, len(y))  # Scale x-axis to 50 generations
 
-        # Plotting
-        plt.plot(x, y_norm, label="Normalized Fitness (Best = 1)")
-        plt.plot(x, trend_line, 'r--', label=f"Trend Line (slope = {slope:.4f})")
+            y_min = np.min(y)
+            y_max = np.max(y)
+            if y_max != y_min:
+                y_norm = (y_max - y) / (y_max - y_min)
+            else:
+                y_norm = np.ones_like(y)
+
+            plt.plot(x, y_norm, alpha=0.9)
 
         plt.title("Normalized Fitness Over Generations: Test B")
         plt.xlabel("Generation")
         plt.ylabel("Normalized Fitness (Reversed)")
         plt.grid(True)
-        plt.legend()
+        plt.tight_layout()
         plt.show()
+
